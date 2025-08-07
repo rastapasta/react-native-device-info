@@ -28,7 +28,6 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodInfo;
-import android.webkit.WebSettings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.app.ActivityManager;
@@ -127,7 +126,7 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
           updatedPowerState.putString(BATTERY_STATE, batteryState);
           updatedPowerState.putDouble(BATTERY_LEVEL, batteryLevel);
           updatedPowerState.putBoolean(LOW_POWER_MODE, powerSaveState);
-          
+
           sendEvent(getReactApplicationContext(), "RNDeviceInfo_powerStateDidChange", updatedPowerState);
           mLastBatteryState = batteryState;
           mLastPowerSaveState = powerSaveState;
@@ -982,15 +981,8 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
 
   @ReactMethod(isBlockingSynchronousMethod = true)
   public String getUserAgentSync() {
-    try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        return WebSettings.getDefaultUserAgent(getReactApplicationContext());
-      } else {
-        return System.getProperty("http.agent");
-      }
-    } catch (RuntimeException e) {
-      return System.getProperty("http.agent");
-    }
+    // Reduced functionality to avoid instantiating the WebKit framework
+    return System.getProperty("http.agent");
   }
   @ReactMethod
   public void getUserAgent(Promise p) { p.resolve(getUserAgentSync()); }
